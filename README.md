@@ -20,7 +20,7 @@ Aplikacja webowa umożliwiająca studentom rezerwację sal do nauki na uczelni. 
 ### 1. Sklonuj repozytorium i zainstaluj zależności
 
 ```bash
-git clone <url-repozytorium>
+git clone https://github.com/qamarq/rezerwownik
 cd rezerwownik
 composer install
 ```
