@@ -71,9 +71,27 @@ INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES
 ('Marek',  'Wiśniewski','marek.w@student.pl',       '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student');
 
 INSERT INTO rooms (name, building, floor, capacity, description) VALUES
-('Sala A101',          'Budynek A',  1, 20, 'Sala komputerowa z 20 stanowiskami i rzutnikiem'),
-('Sala B205',          'Budynek B',  2, 15, 'Sala cicha do nauki indywidualnej i pracy w małych grupach'),
-('Sala C310',          'Budynek C',  3,  8, 'Mała sala do pracy grupowej z tablicą interaktywną'),
-('Czytelnia',          'Biblioteka', 0, 30, 'Czytelnia główna — strefa ciszy, dostępna całą dobę'),
-('Sala Konferencyjna', 'Budynek A',  2, 12, 'Sala z projektorem, tablicą i systemem wideokonferencji'),
-('Pracownia D402',     'Budynek D',  4, 25, 'Pracownia komputerowa z oprogramowaniem inżynierskim');
+('Aula 241',                 'A-1',  2, 120, 'Duża aula wykładowa z projektorem i nagłośnieniem'),
+('Sala 164',                 'A-1',  1,  36, 'Klasyczna sala ćwiczeniowa z tablicą suchościeralną'),
+('Sala seminaryjna 322',     'A-1',  3,  24, 'Sala do seminariów i spotkań kół naukowych'),
+('Laboratorium sieciowe 109', 'B-4',  1,  18, 'Laboratorium komputerowe z infrastrukturą sieciową'),
+('Sala projektowa 205',      'B-4',  2,  16, 'Sala do pracy zespołowej z monitorem i tablicą'),
+('Pracownia CAD 317',        'B-4',  3,  28, 'Pracownia komputerowa z oprogramowaniem inżynierskim'),
+('Czytelnia techniczna',     'C-16', 0,  40, 'Cicha czytelnia do nauki indywidualnej'),
+('Sala konferencyjna 1.27',  'C-16', 1,  20, 'Sala z systemem wideokonferencji i ekranem'),
+('Pokój pracy grupowej 2.14','C-16', 2,   8, 'Mała sala do pracy w grupach projektowych'),
+('Sala 3.05',                'C-16', 3,  14, 'Kameralna sala z rzutnikiem i tablicą interaktywną'),
+('Laboratorium 012',         'D-1',  0,  22, 'Laboratorium dydaktyczne do zajęć praktycznych'),
+('Sala 128',                 'D-1',  1,  32, 'Sala ćwiczeniowa w pobliżu dziekanatu'),
+('Sala 226',                 'D-1',  2,  26, 'Sala do zajęć projektowych i konsultacji'),
+('Pracownia elektroniki 304','D-1',  3,  18, 'Pracownia z podstawowym wyposażeniem laboratoryjnym'),
+('Aula 007',                 'D-21', 0,  90, 'Aula z miejscami audytoryjnymi i projektorem'),
+('Sala komputerowa 115',     'D-21', 1,  30, 'Sala komputerowa z 30 stanowiskami'),
+('Sala seminaryjna 218',     'D-21', 2,  18, 'Sala do seminariów dyplomowych'),
+('Laboratorium automatyki 331','D-21',3,  20, 'Laboratorium z miejscami do pracy zespołowej'),
+('Studio projektowe 041',    'H-4',  0,  12, 'Sala warsztatowa z dużymi stołami projektowymi'),
+('Sala 112',                 'H-4',  1,  24, 'Jasna sala ćwiczeniowa z ekranem projekcyjnym'),
+('Sala 214',                 'H-4',  2,  16, 'Sala do konsultacji i pracy w małych grupach'),
+('Laboratorium materiałowe 305','H-4',3,  20, 'Laboratorium dydaktyczne z zapleczem technicznym'),
+('Sala multimedialna 101',   'C-13', 1,  34, 'Sala z projektorem, nagłośnieniem i kamerą'),
+('Pokój cichej nauki 204',   'C-13', 2,  10, 'Niewielka sala do nauki indywidualnej');

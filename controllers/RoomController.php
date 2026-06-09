@@ -24,7 +24,14 @@ class RoomController
     {
         Auth::requireLogin();
         $date = $_GET['date'] ?? date('Y-m-d');
-        $rooms = $this->roomModel->getWithBookingCount($date);
+        $filters = [
+            'building' => trim($_GET['building'] ?? ''),
+            'floor' => $_GET['floor'] ?? '',
+            'capacity' => $_GET['capacity'] ?? '',
+        ];
+        $sort = $_GET['sort'] ?? 'name';
+        $filterOptions = $this->roomModel->getFilterOptions();
+        $rooms = $this->roomModel->getWithBookingCount($date, $filters, $sort);
         $pageTitle = 'Dostępne sale';
         require __DIR__ . '/../views/rooms/index.php';
     }

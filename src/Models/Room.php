@@ -69,19 +69,60 @@ class Room
         $stmt->execute([$id]);
     }
 
-    public function getWithBookingCount(string $date): array
+    public function getFilterOptions(): array
     {
+        return [
+            'buildings' => $this->db->query(
+                'SELECT DISTINCT building FROM rooms WHERE is_active = 1 ORDER BY building'
+            )->fetchAll(PDO::FETCH_COLUMN),
+            'floors' => $this->db->query(
+                'SELECT DISTINCT floor FROM rooms WHERE is_active = 1 ORDER BY floor'
+            )->fetchAll(PDO::FETCH_COLUMN),
+            'capacities' => $this->db->query(
+                'SELECT DISTINCT capacity FROM rooms WHERE is_active = 1 ORDER BY capacity'
+            )->fetchAll(PDO::FETCH_COLUMN),
+        ];
+    }
+
+    public function getWithBookingCount(string $date, array $filters = [], string $sort = 'name'): array
+    {
+        $where = ['r.is_active = 1'];
+        $params = [$date];
+
+        if (!empty($filters['building'])) {
+            $where[] = 'r.building = ?';
+            $params[] = $filters['building'];
+        }
+
+        if (isset($filters['floor']) && $filters['floor'] !== '') {
+            $where[] = 'r.floor = ?';
+            $params[] = (int)$filters['floor'];
+        }
+
+        if (!empty($filters['capacity'])) {
+            $where[] = 'r.capacity >= ?';
+            $params[] = (int)$filters['capacity'];
+        }
+
+        $orderBy = match ($sort) {
+            'capacity_asc' => 'r.capacity ASC, r.name ASC',
+            'capacity_desc' => 'r.capacity DESC, r.name ASC',
+            'bookings_asc' => 'bookings_count ASC, r.name ASC',
+            'bookings_desc' => 'bookings_count DESC, r.name ASC',
+            default => 'r.name ASC',
+        };
+
         $stmt = $this->db->prepare(
             'SELECT r.*,
                     COUNT(CASE WHEN res.status = "aktywna" THEN 1 END) AS bookings_count
              FROM rooms r
              LEFT JOIN reservations res
                 ON r.id = res.room_id AND res.reservation_date = ?
-             WHERE r.is_active = 1
+             WHERE ' . implode(' AND ', $where) . '
              GROUP BY r.id
-             ORDER BY r.name'
+             ORDER BY ' . $orderBy
         );
-        $stmt->execute([$date]);
+        $stmt->execute($params);
 
         return $stmt->fetchAll();
     }
