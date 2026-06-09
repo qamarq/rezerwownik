@@ -3,29 +3,99 @@
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
     <div>
         <h1 class="text-2xl font-bold text-slate-800">Dostępne sale</h1>
-        <p class="text-sm text-slate-500 mt-0.5">Wybierz datę i zarezerwuj salę</p>
+        <p class="text-sm text-slate-500 mt-0.5">Wybierz datę, przefiltruj sale i zarezerwuj termin</p>
     </div>
+</div>
 
-    <form method="GET" action="<?= url('rooms') ?>" class="flex items-center gap-2">
-        <label for="date" class="text-sm text-slate-600 font-medium">Data:</label>
+<?php
+$paginationParams = [
+    'date' => $date,
+    'building' => $filters['building'],
+    'floor' => $filters['floor'],
+    'capacity' => $filters['capacity'],
+    'sort' => $sort,
+];
+$paginationParams = array_filter($paginationParams, static fn($value) => $value !== '' && $value !== null);
+?>
+
+<form method="GET" action="<?= url('rooms') ?>"
+      class="bg-white border border-slate-200 rounded-2xl shadow-sm px-4 py-4 mb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
+    <div>
+        <label for="date" class="block text-xs font-semibold text-slate-500 mb-1">Data</label>
         <input type="date" id="date" name="date"
                value="<?= htmlspecialchars($date) ?>"
                min="<?= date('Y-m-d') ?>"
-               class="border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
-        <button type="submit"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm px-4 py-2 rounded-xl transition">
-            Pokaż
-        </button>
-    </form>
-</div>
+               onchange="this.form.submit()"
+               class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+    </div>
+
+    <div>
+        <label for="building" class="block text-xs font-semibold text-slate-500 mb-1">Budynek</label>
+        <select id="building" name="building" onchange="this.form.submit()"
+                class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+            <option value="">Wszystkie</option>
+            <?php foreach ($filterOptions['buildings'] as $building): ?>
+                <option value="<?= htmlspecialchars($building) ?>" <?= $filters['building'] === $building ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($building) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div>
+        <label for="floor" class="block text-xs font-semibold text-slate-500 mb-1">Piętro</label>
+        <select id="floor" name="floor" onchange="this.form.submit()"
+                class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+            <option value="">Wszystkie</option>
+            <?php foreach ($filterOptions['floors'] as $floor): ?>
+                <option value="<?= (int)$floor ?>" <?= (string)$filters['floor'] === (string)$floor ? 'selected' : '' ?>>
+                    <?= (int)$floor === 0 ? 'Parter' : (int)$floor . '. piętro' ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div>
+        <label for="capacity" class="block text-xs font-semibold text-slate-500 mb-1">Pojemność</label>
+        <select id="capacity" name="capacity" onchange="this.form.submit()"
+                class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+            <option value="">Dowolna</option>
+            <?php foreach ($filterOptions['capacities'] as $capacity): ?>
+                <option value="<?= (int)$capacity ?>" <?= (string)$filters['capacity'] === (string)$capacity ? 'selected' : '' ?>>
+                    od <?= (int)$capacity ?> os.
+                </option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
+    <div class="lg:col-span-2">
+        <label for="sort" class="block text-xs font-semibold text-slate-500 mb-1">Sortuj wg</label>
+        <select id="sort" name="sort" onchange="this.form.submit()"
+                class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+            <option value="name" <?= $sort === 'name' ? 'selected' : '' ?>>Alfabetycznie</option>
+            <option value="capacity_desc" <?= $sort === 'capacity_desc' ? 'selected' : '' ?>>Pojemność: największa</option>
+            <option value="capacity_asc" <?= $sort === 'capacity_asc' ? 'selected' : '' ?>>Pojemność: najmniejsza</option>
+            <option value="bookings_asc" <?= $sort === 'bookings_asc' ? 'selected' : '' ?>>Rezerwacje: najmniej</option>
+            <option value="bookings_desc" <?= $sort === 'bookings_desc' ? 'selected' : '' ?>>Rezerwacje: najwięcej</option>
+        </select>
+    </div>
+
+    <div class="flex items-end">
+        <a href="<?= url('rooms?date=' . urlencode($date)) ?>"
+           class="w-full text-center border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs px-2 py-2 rounded-xl transition">
+            Wyczyść filtry
+        </a>
+    </div>
+</form>
 
 <p class="text-sm text-slate-500 mb-5">
     Wyniki dla: <strong class="text-slate-700"><?= date('j F Y', strtotime($date)) ?></strong>
+    &bull; znaleziono <?= (int)$totalRooms ?> sal
 </p>
 
 <?php if (empty($rooms)): ?>
     <div class="bg-blue-50 border border-blue-200 text-blue-700 rounded-xl px-5 py-4 text-sm">
-        Brak dostępnych sal w systemie.
+        Brak sal spełniających wybrane filtry.
     </div>
 <?php else: ?>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -35,7 +105,7 @@
                     <h2 class="font-bold text-slate-800 text-lg"><?= htmlspecialchars($room['name']) ?></h2>
                     <p class="text-sm text-slate-500">
                         <?= htmlspecialchars($room['building']) ?>
-                        &bull; <?= $room['floor'] === 0 ? 'Parter' : $room['floor'] . '. piętro' ?>
+                        &bull; <?= (int)$room['floor'] === 0 ? 'Parter' : (int)$room['floor'] . '. piętro' ?>
                     </p>
                 </div>
 
@@ -71,6 +141,36 @@
             </div>
         <?php endforeach; ?>
     </div>
+
+    <?php if ($totalPages > 1): ?>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-6 text-sm">
+            <p class="text-slate-500">
+                Strona <?= (int)$page ?> z <?= (int)$totalPages ?>
+            </p>
+            <div class="flex flex-wrap gap-2">
+                <?php if ($page > 1): ?>
+                    <a href="<?= url('rooms?' . http_build_query($paginationParams + ['page' => $page - 1])) ?>"
+                       class="px-3 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition">
+                        Poprzednia
+                    </a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="<?= url('rooms?' . http_build_query($paginationParams + ['page' => $i])) ?>"
+                       class="px-3 py-2 rounded-xl border transition <?= $i === $page ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="<?= url('rooms?' . http_build_query($paginationParams + ['page' => $page + 1])) ?>"
+                       class="px-3 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition">
+                        Następna
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>
