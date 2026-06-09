@@ -65,10 +65,10 @@ CREATE TABLE IF NOT EXISTS reservations (
 -- Hasło dla wszystkich kont: password
 -- -------------------------------------------------------
 INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES
-('Adam',   'Pracownik', 'pracownik@uczelnia.pl',   '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'pracownik'),
-('Jan',    'Kowalski',  'jan.kowalski@student.pl',  '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student'),
-('Anna',   'Nowak',     'anna.nowak@student.pl',    '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student'),
-('Marek',  'Wiśniewski','marek.w@student.pl',       '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student');
+('Adam',   'Myszka', 'adam.myszka@pwr.edu.pl',                 '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'pracownik'),
+('Jan',    'Kowalski',      'jan.kowalski@student.pwr.edu.pl', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student'),
+('Anna',   'Nowak',         'anna.nowak@student.pwr.edu.pl',   '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student'),
+('Marek',  'Wiśniewski',    'marek.w@student.pwr.edu.pl',      '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student');
 
 INSERT INTO rooms (name, building, floor, capacity, description) VALUES
 ('Sala ćwiczeniowa 164',      'A-1',  1,  36, 'Klasyczna sala ćwiczeniowa z tablicą suchościeralną'),
