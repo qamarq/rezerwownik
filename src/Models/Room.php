@@ -84,25 +84,29 @@ class Room
         ];
     }
 
-    public function getWithBookingCount(string $date, array $filters = [], string $sort = 'name'): array
+    public function countFiltered(array $filters = []): int
     {
-        $where = ['r.is_active = 1'];
-        $params = [$date];
+        [$where, $params] = $this->buildFilterWhere($filters);
 
-        if (!empty($filters['building'])) {
-            $where[] = 'r.building = ?';
-            $params[] = $filters['building'];
-        }
+        $stmt = $this->db->prepare(
+            'SELECT COUNT(*) FROM rooms r WHERE ' . implode(' AND ', $where)
+        );
+        $stmt->execute($params);
 
-        if (isset($filters['floor']) && $filters['floor'] !== '') {
-            $where[] = 'r.floor = ?';
-            $params[] = (int)$filters['floor'];
-        }
+        return (int)$stmt->fetchColumn();
+    }
 
-        if (!empty($filters['capacity'])) {
-            $where[] = 'r.capacity >= ?';
-            $params[] = (int)$filters['capacity'];
-        }
+    public function getWithBookingCount(
+        string $date,
+        array $filters = [],
+        string $sort = 'name',
+        int $limit = 12,
+        int $offset = 0
+    ): array {
+        $limit = max(1, $limit);
+        $offset = max(0, $offset);
+        [$where, $filterParams] = $this->buildFilterWhere($filters);
+        $params = array_merge([$date], $filterParams);
 
         $orderBy = match ($sort) {
             'capacity_asc' => 'r.capacity ASC, r.name ASC',
@@ -120,11 +124,35 @@ class Room
                 ON r.id = res.room_id AND res.reservation_date = ?
              WHERE ' . implode(' AND ', $where) . '
              GROUP BY r.id
-             ORDER BY ' . $orderBy
+             ORDER BY ' . $orderBy . '
+             LIMIT ' . $limit . ' OFFSET ' . $offset
         );
         $stmt->execute($params);
 
         return $stmt->fetchAll();
+    }
+
+    private function buildFilterWhere(array $filters): array
+    {
+        $where = ['r.is_active = 1'];
+        $params = [];
+
+        if (!empty($filters['building'])) {
+            $where[] = 'r.building = ?';
+            $params[] = $filters['building'];
+        }
+
+        if (isset($filters['floor']) && $filters['floor'] !== '') {
+            $where[] = 'r.floor = ?';
+            $params[] = (int)$filters['floor'];
+        }
+
+        if (!empty($filters['capacity'])) {
+            $where[] = 'r.capacity >= ?';
+            $params[] = (int)$filters['capacity'];
+        }
+
+        return [$where, $params];
     }
 
     public function getReservationsForDate(int $roomId, string $date): array

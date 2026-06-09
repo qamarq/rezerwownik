@@ -7,8 +7,19 @@
     </div>
 </div>
 
+<?php
+$paginationParams = [
+    'date' => $date,
+    'building' => $filters['building'],
+    'floor' => $filters['floor'],
+    'capacity' => $filters['capacity'],
+    'sort' => $sort,
+];
+$paginationParams = array_filter($paginationParams, static fn($value) => $value !== '' && $value !== null);
+?>
+
 <form method="GET" action="<?= url('rooms') ?>"
-      class="bg-white border border-slate-200 rounded-2xl shadow-sm px-4 py-4 mb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+      class="bg-white border border-slate-200 rounded-2xl shadow-sm px-4 py-4 mb-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
     <div>
         <label for="date" class="block text-xs font-semibold text-slate-500 mb-1">Data</label>
         <input type="date" id="date" name="date"
@@ -57,11 +68,11 @@
         </select>
     </div>
 
-    <div>
+    <div class="lg:col-span-2">
         <label for="sort" class="block text-xs font-semibold text-slate-500 mb-1">Sortuj wg</label>
         <select id="sort" name="sort" onchange="this.form.submit()"
                 class="w-full border border-slate-300 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
-            <option value="name" <?= $sort === 'name' ? 'selected' : '' ?>>Nazwa</option>
+            <option value="name" <?= $sort === 'name' ? 'selected' : '' ?>>Alfabetycznie</option>
             <option value="capacity_desc" <?= $sort === 'capacity_desc' ? 'selected' : '' ?>>Pojemność: największa</option>
             <option value="capacity_asc" <?= $sort === 'capacity_asc' ? 'selected' : '' ?>>Pojemność: najmniejsza</option>
             <option value="bookings_asc" <?= $sort === 'bookings_asc' ? 'selected' : '' ?>>Rezerwacje: najmniej</option>
@@ -71,7 +82,7 @@
 
     <div class="flex items-end">
         <a href="<?= url('rooms?date=' . urlencode($date)) ?>"
-           class="w-full text-center border border-slate-300 hover:bg-slate-50 text-slate-600 text-sm px-3 py-2 rounded-xl transition">
+           class="w-full text-center border border-slate-300 hover:bg-slate-50 text-slate-600 text-xs px-2 py-2 rounded-xl transition">
             Wyczyść filtry
         </a>
     </div>
@@ -79,6 +90,7 @@
 
 <p class="text-sm text-slate-500 mb-5">
     Wyniki dla: <strong class="text-slate-700"><?= date('j F Y', strtotime($date)) ?></strong>
+    &bull; znaleziono <?= (int)$totalRooms ?> sal
 </p>
 
 <?php if (empty($rooms)): ?>
@@ -129,6 +141,36 @@
             </div>
         <?php endforeach; ?>
     </div>
+
+    <?php if ($totalPages > 1): ?>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mt-6 text-sm">
+            <p class="text-slate-500">
+                Strona <?= (int)$page ?> z <?= (int)$totalPages ?>
+            </p>
+            <div class="flex flex-wrap gap-2">
+                <?php if ($page > 1): ?>
+                    <a href="<?= url('rooms?' . http_build_query($paginationParams + ['page' => $page - 1])) ?>"
+                       class="px-3 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition">
+                        Poprzednia
+                    </a>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <a href="<?= url('rooms?' . http_build_query($paginationParams + ['page' => $i])) ?>"
+                       class="px-3 py-2 rounded-xl border transition <?= $i === $page ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-300 text-slate-600 hover:bg-slate-50' ?>">
+                        <?= $i ?>
+                    </a>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <a href="<?= url('rooms?' . http_build_query($paginationParams + ['page' => $page + 1])) ?>"
+                       class="px-3 py-2 rounded-xl border border-slate-300 text-slate-600 hover:bg-slate-50 transition">
+                        Następna
+                    </a>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>
 
 <?php require __DIR__ . '/../partials/footer.php'; ?>

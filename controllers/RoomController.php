@@ -30,8 +30,16 @@ class RoomController
             'capacity' => $_GET['capacity'] ?? '',
         ];
         $sort = $_GET['sort'] ?? 'name';
+        if (!in_array($sort, ['name', 'capacity_asc', 'capacity_desc', 'bookings_asc', 'bookings_desc'], true)) {
+            $sort = 'name';
+        }
+        $page = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = 12;
         $filterOptions = $this->roomModel->getFilterOptions();
-        $rooms = $this->roomModel->getWithBookingCount($date, $filters, $sort);
+        $totalRooms = $this->roomModel->countFiltered($filters);
+        $totalPages = max(1, (int)ceil($totalRooms / $perPage));
+        $page = min($page, $totalPages);
+        $rooms = $this->roomModel->getWithBookingCount($date, $filters, $sort, $perPage, ($page - 1) * $perPage);
         $pageTitle = 'Dostępne sale';
         require __DIR__ . '/../views/rooms/index.php';
     }
