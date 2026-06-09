@@ -101,3 +101,20 @@ INSERT INTO rooms (name, building, floor, capacity, description) VALUES
 ('Laboratorium automatyki 124','D-21',1,  20, 'Laboratorium z miejscami do pracy zespołowej'),
 ('Studio projektowe 112',     'H-4',  1,  24, 'Jasna sala ćwiczeniowa z ekranem projekcyjnym'),
 ('Sala konsultacyjna 118',    'H-4',  1,  16, 'Sala do konsultacji i pracy w małych grupach');
+
+INSERT INTO reservations (user_id, room_id, reservation_date, start_time, end_time, purpose, status)
+SELECT u.id, r.id, '2026-06-09', '08:00:00', '09:30:00', 'Praca nad projektem zespołowym', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'jan.kowalski@student.pwr.edu.pl' AND r.name = 'Pokój pracy grupowej 327'
+UNION ALL SELECT u.id, r.id, '2026-06-09', '09:45:00', '11:15:00', 'Nauka do egzaminu', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'anna.nowak@student.pwr.edu.pl' AND r.name = 'Czytelnia techniczna'
+UNION ALL SELECT u.id, r.id, '2026-06-09', '11:30:00', '13:00:00', 'Spotkanie koła naukowego', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'marek.w@student.pwr.edu.pl' AND r.name = 'Pokój pracy grupowej 2.14'
+UNION ALL SELECT u.id, r.id, '2026-06-09', '13:15:00', '14:45:00', 'Konsultacje dla studentów', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'adam.myszka@pwr.edu.pl' AND r.name = 'Sala seminaryjna 168'
+UNION ALL SELECT u.id, r.id, '2026-06-09', '16:00:00', '18:00:00', 'Ćwiczenia z baz danych', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'anna.nowak@student.pwr.edu.pl' AND r.name = 'Sala 128'
+UNION ALL SELECT u.id, r.id, '2026-06-10', '08:30:00', '10:00:00', 'Warsztaty projektowe', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'marek.w@student.pwr.edu.pl' AND r.name = 'Sala projektowa 205'
+UNION ALL SELECT u.id, r.id, '2026-06-10', '10:15:00', '11:45:00', 'Przygotowanie prezentacji', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'jan.kowalski@student.pwr.edu.pl' AND r.name = 'Sala konferencyjna 1.27'
+UNION ALL SELECT u.id, r.id, '2026-06-10', '12:00:00', '13:30:00', 'Seminarium dyplomowe', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'adam.myszka@pwr.edu.pl' AND r.name = 'Sala wykładowa 244'
+UNION ALL SELECT u.id, r.id, '2026-06-10', '14:00:00', '15:30:00', 'Laboratorium elektroniki', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'anna.nowak@student.pwr.edu.pl' AND r.name = 'Pracownia elektroniki 231'
+UNION ALL SELECT u.id, r.id, '2026-06-10', '17:00:00', '19:00:00', 'Praca indywidualna', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'jan.kowalski@student.pwr.edu.pl' AND r.name = 'Sala 3.05'
+UNION ALL SELECT u.id, r.id, '2026-06-11', '08:00:00', '10:00:00', 'Zajęcia laboratoryjne', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'anna.nowak@student.pwr.edu.pl' AND r.name = 'Sala komputerowa 114'
+UNION ALL SELECT u.id, r.id, '2026-06-11', '10:30:00', '12:00:00', 'Warsztat projektowy', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'marek.w@student.pwr.edu.pl' AND r.name = 'Pracownia projektowa 3.12'
+UNION ALL SELECT u.id, r.id, '2026-06-11', '12:15:00', '13:45:00', 'Konsultacje grupowe', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'jan.kowalski@student.pwr.edu.pl' AND r.name = 'Sala konsultacyjna 135'
+UNION ALL SELECT u.id, r.id, '2026-06-11', '15:00:00', '16:30:00', 'Laboratorium automatyki', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'adam.myszka@pwr.edu.pl' AND r.name = 'Laboratorium automatyki 124'
+UNION ALL SELECT u.id, r.id, '2026-06-11', '17:00:00', '18:30:00', 'Spotkanie projektowe', 'aktywna' FROM users u JOIN rooms r WHERE u.email = 'marek.w@student.pwr.edu.pl' AND r.name = 'Sala konsultacyjna 118';
